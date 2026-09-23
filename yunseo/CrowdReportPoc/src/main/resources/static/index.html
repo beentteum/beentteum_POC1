@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>BEENTEUM 혼잡도 제보 PoC</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+        }
+
+        .container {
+            width: 400px;
+            margin: 80px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            font-size: 24px;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+        }
+
+        input,
+        select,
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            box-sizing: border-box;
+        }
+
+        button {
+            margin-top: 20px;
+            cursor: pointer;
+        }
+
+        #result {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>카페 혼잡도 제보</h1>
+
+    <label>
+        사용자 ID
+        <input
+                type="number"
+                id="userId"
+                value="1">
+    </label>
+
+    <label>
+        카페 ID
+        <input
+                type="number"
+                id="cafeId"
+                value="1">
+    </label>
+
+    <label>
+        현재 혼잡도
+
+        <select id="crowdLevel">
+            <option value="여유">여유</option>
+            <option value="보통">보통</option>
+            <option value="혼잡">혼잡</option>
+        </select>
+    </label>
+
+    <button onclick="submitReport()">
+        혼잡도 제보하기
+    </button>
+
+    <div id="result"></div>
+
+</div>
+
+<script>
+
+    async function submitReport() {
+
+        const userId =
+            Number(document.getElementById("userId").value);
+
+        const cafeId =
+            Number(document.getElementById("cafeId").value);
+
+        const crowdLevel =
+            document.getElementById("crowdLevel").value;
+
+        const response = await fetch(
+            "/api/reports",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    userId,
+                    cafeId,
+                    crowdLevel
+                })
+            }
+        );
+
+        const data = await response.json();
+
+        document.getElementById("result").innerText =
+            data.message;
+    }
+
+</script>
+
+</body>
+</html>
